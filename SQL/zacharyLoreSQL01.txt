@@ -12,3 +12,36 @@ Arrange the list in order of location.*/
 	FROM Section
 	ORDER BY Location;
 	
+3. 
+/*List the first and last names of Instructors with a first name starting with “T”.
+Sort them in alphabetical order.*/
+	SELECT First_Name, Last_Name
+	FROM Instructor
+	WHERE First_Name LIKE 'T%'
+	ORDER BY Last_Name;
+	
+4. /*
+List the phone number, full name (as one column) and employer for all students with a last name of “Torres”.
+Sort by Employer*/
+	SELECT phone, First_Name||' '||Last_Name AS "FULLNAME", Employer
+	FROM Student
+	WHERE Last_Name = 'Torres'
+	ORDER BY Employer;
+	
+5. 
+/*List the course number and course description of all courses that have a prerequisite of course 350.
+Arrange in order of course number.*/
+	SELECT Course_No, Description
+	FROM Course
+	WHERE Prerequisite = 350
+	ORDER BY Course_No;
+	
+6. /*List the course number, description and cost for all 200 level courses (200-299) costing less than $1100.
+Arrange by course number.*/
+	SELECT Course_No, Description, Cost
+	FROM Course
+	WHERE Course_No BETWEEN 200 AND 299
+	ORDER BY Course_No;
+
+	
+	
