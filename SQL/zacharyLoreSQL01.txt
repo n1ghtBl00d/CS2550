@@ -1,0 +1,14 @@
+1. 
+/*List the salutation and names (first and last name) of all instructors in alphabetical order
+(last name then first name) .*/
+ 	SELECT Salutation, First_Name, Last_Name
+	FROM Instructor
+	ORDER BY Last_Name, First_Name;
+	
+2. 
+/*Provide a list of distinct locations that have been used to teach sections of courses.
+Arrange the list in order of location.*/
+	SELECT DISTINCT Location
+	FROM Section
+	ORDER BY Location;
+	
