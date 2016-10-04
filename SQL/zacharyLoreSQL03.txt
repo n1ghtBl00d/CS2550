@@ -18,11 +18,10 @@ WHERE start_Date_Time LIKE '%JUL-07'
 ORDER BY start_Date_Time, course_No;
 
 4. /*List Student ID, Section ID and final grade for all students who have a final grade and enrolled in January 2007.*/
-SELECT Grade.student_Id, Student.student_Id, section_Id, numeric_Grade
-FROM Grade, Student
-WHERE Grade.student_Id = Student.student_Id
-AND grade_Type_Code = 'FI'
-AND registration_Date LIKE '%JAN-07';
+SELECT student_Id, section_Id, final_Grade
+FROM Enrollment
+WHERE enroll_Date LIKE '%JAN-07'
+AND final_Grade IS NOT NULL;
 
 5. /*Create a query using the Oracle Dual Table that returns the date of the end of the semester for courses that begin on January 11, 2016. The semester is 109 days long.*/
 SELECT TO_DATE('11-JAN-16') + 109 AS SEMESTER_END_DATE
