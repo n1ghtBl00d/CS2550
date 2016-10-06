@@ -1,0 +1,54 @@
+SELECT TO_CHAR(AVG(cost), '9999.99') AS "Average Cost"
+FROM Course;
+
+SELECT COUNT(*) AS "February_Registrations"
+FROM Student
+WHERE registration_Date LIKE '%FEB%';
+
+SELECT TO_CHAR(AVG(numeric_Grade), '99.99') AS AVERAGE, MAX(numeric_Grade) AS HIGHEST, MIN(numeric_Grade) AS LOWEST
+FROM Grade
+WHERE section_Id = 147
+AND grade_Type_Code = 'FI';
+
+SELECT city, state, COUNT(*) 
+FROM Zipcode
+GROUP BY city, state
+HAVING COUNT(*) > 2
+ORDER BY state, city;
+
+SELECT  section_Id, COUNT(*) 
+FROM Enrollment
+WHERE TO_CHAR(enroll_Date, 'MM/DD/YYYY') = '02/21/2007'
+GROUP BY section_Id
+ORDER BY COUNT(*) DESC;
+
+SELECT student_Id, section_Id, TO_CHAR(AVG(numeric_Grade), '99.9999') AS AVERAGEGRADE
+FROM Grade
+WHERE section_Id = 86
+GROUP BY student_Id, section_Id
+ORDER BY student_Id;
+
+SELECT student_Id, COUNT(*) AS SECTIONS
+FROM Enrollment
+WHERE student_Id = 250
+GROUP BY student_Id;
+
+SELECT section_Id, MIN(numeric_Grade) AS LOWSCORE
+FROM Grade
+WHERE numeric_Grade > 80
+AND grade_Type_Code = 'QZ'
+GROUP BY section_Id
+ORDER BY section_Id;
+
+SELECT employer, COUNT(*) AS EMPLOYEES
+FROM Student
+GROUP BY employer
+HAVING COUNT(*) > 5
+ORDER BY COUNT(*);
+
+SELECT section_Id, COUNT(*) AS PARTICIPATION_GRADES, MIN(numeric_Grade) AS LOWEST_GRADE
+FROM Grade
+WHERE grade_Type_Code = 'PA'
+GROUP BY section_Id
+HAVING COUNT(*) > 15
+ORDER BY section_Id;
