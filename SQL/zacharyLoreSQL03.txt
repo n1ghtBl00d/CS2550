@@ -37,7 +37,7 @@ AND (
 	OR SUBSTR(location, -1) = 4
 	OR SUBSTR(location, -1) = 6
 	OR SUBSTR(location, -1) = 8
-	);
+	)
 
 7. /*Provide a list of Students in zip code 11368 that registered 3 or more days after their student record was created.*/
 SELECT last_Name, first_Name
