@@ -1,0 +1,100 @@
+SELECT s.first_Name, s.last_Name, s.phone
+FROM Student s
+INNER JOIN Zipcode z
+	ON s.zip = z.zip
+WHERE z.city = 'Newark'
+ORDER BY last_Name, first_Name;
+
+
+SELECT c.course_No, p.course_No, p.description
+FROM Course c
+INNER JOIN Course p
+	on c.prerequisite = p.course_No
+WHERE c.course_No LIKE '3%'
+ORDER BY c.course_No;
+
+
+SELECT s.course_No, c.description
+FROM Section s
+INNER JOIN Instructor i
+	ON s.instructor_Id = i.instructor_Id
+INNER JOIN Course c
+	ON s.course_No = c.course_No
+WHERE s.course_No LIKE '1%'
+AND i.last_Name = 'Lowry'
+ORDER BY s.course_No;
+
+
+SELECT w.grade_Type_Code, g.description, w.number_Per_Section
+FROM Grade_Type g
+INNER JOIN Grade_Type_Weight w
+	ON g.grade_Type_Code = w.grade_Type_Code
+INNER JOIN Section s
+	ON w.section_Id = s.section_Id
+WHERE s.course_No = 144
+ORDER BY description;
+
+
+SELECT s.last_Name||', '||s.first_Name AS student_Name 
+FROM Grade g
+INNER JOIN Enrollment e
+	ON 	g.section_Id = e.section_Id
+	AND g.student_Id = e.student_Id
+INNER JOIN Student s
+	ON e.student_Id = s.student_Id
+HAVING AVG(g.numeric_Grade) >= 93
+GROUP BY s.last_Name, s.first_Name
+ORDER BY last_Name, first_Name;
+
+
+SELECT i.first_Name, i.last_Name, i.street_Address, z.city, z.state, z.zip
+FROM Instructor i
+INNER JOIN Zipcode Z
+	ON i.zip = z.zip
+INNER JOIN Section s 
+	ON i.instructor_Id = s.instructor_Id
+HAVING COUNT(*) < 10
+GROUP BY i.first_Name, i.last_Name, i.street_Address, z.city, z.state, z.zip
+ORDER BY i.last_Name;
+
+
+SELECT c.course_No, COUNT(*) AS "ENROLLED"
+FROM Enrollment e
+INNER JOIN Section s
+	ON s.section_Id = e.section_Id
+INNER JOIN Course c
+	ON c.course_No = s.course_No
+WHERE c.prerequisite IS NULL
+GROUP BY c.course_No
+ORDER BY "ENROLLED" DESC;
+
+
+SELECT DISTINCT s.first_Name, s.last_Name, s.phone
+FROM Student s
+INNER JOIN Zipcode z
+	ON s.zip = z.zip
+INNER JOIN Enrollment e
+	ON s.student_Id = e.student_Id
+WHERE e.enroll_Date <= TO_DATE('FEB-02-2007 10:20 AM', 'MON-DD-YYYY HH:MI AM')
+AND z.city = 'Flushing'
+AND z.state = 'NY'
+ORDER BY last_Name, first_Name;
+
+
+SELECT s.course_No
+FROM Section s
+INNER JOIN Grade_Type_Weight w
+	ON s.section_Id = w.section_Id
+WHERE w.grade_Type_Code = 'PJ'
+ORDER BY course_No;
+
+
+SELECT MAX(g.numeric_Grade) AS "HIGHEST_FINAL_GRADE"
+FROM Grade g
+INNER JOIN Enrollment e
+	ON g.student_Id = e.student_Id
+	AND g.section_Id = e.section_Id
+INNER JOIN Section s
+	ON e.section_Id = s.section_Id
+WHERE grade_Type_Code = 'FI'
+AND s.course_No = 145;
