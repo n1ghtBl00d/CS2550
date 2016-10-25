@@ -1,0 +1,25 @@
+SELECT student_Id
+FROM (
+	SELECT e.student_Id, COUNT(*) AS classCount
+	FROM Enrollment e
+	INNER JOIN Section s
+		ON e.section_Id = s.section_Id
+	WHERE s.course_No > 99
+		AND s.course_No < 200
+	GROUP BY e.student_Id
+	ORDER BY classCount
+) table1
+Where classcount = (
+	SELECT MAX(classCount) 
+	FROM (
+		SELECT e.student_Id, COUNT(*) AS classCount
+		FROM Enrollment e
+		INNER JOIN Section s
+			ON e.section_Id = s.section_Id
+		WHERE s.course_No > 99
+			AND s.course_No < 200
+		GROUP BY e.student_Id
+		ORDER BY classCount
+	)
+);
+
