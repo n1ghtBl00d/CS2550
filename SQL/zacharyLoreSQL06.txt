@@ -23,3 +23,75 @@ Where classcount = (
 	)
 );
 
+
+SELECT g.student_Id, s.last_Name, s.first_Name
+FROM Grade g
+INNER JOIN Enrollment e
+	ON  g.student_Id = e.student_Id
+	AND g.section_Id = e.section_Id
+INNER JOIN Section se
+	ON e.section_Id = se.section_Id
+INNER JOIN Student s
+	on e.student_Id = s.student_Id
+WHERE g.grade_Type_Code = 'FI'
+AND g.section_Id = 100
+AND se.course_No = 230
+AND g.numeric_grade = (
+	SELECT MAX(numeric_grade)
+	FROM Grade
+	WHERE grade_Type_Code = 'FI'
+	AND section_Id = 100
+);
+
+
+SELECT salutation, first_Name, last_Name, zip
+FROM Instructor
+WHERE instructor_Id NOT IN (
+	SELECT instructor_Id
+	FROM Section
+)
+ORDER BY last_Name;
+
+
+SELECT s.last_Name, g.numeric_grade
+FROM Grade g
+INNER JOIN Enrollment e
+	ON  g.student_Id = e.student_Id
+	AND g.section_Id = e.section_Id
+INNER JOIN Student s
+	ON e.student_Id = s.student_Id
+WHERE g.grade_Type_Code = 'FI'
+AND g.section_Id = 90
+AND numeric_grade > (
+	SELECT AVG(numeric_Grade)
+	FROM Grade
+)
+ORDER BY last_Name;
+
+
+SELECT course_No, description
+FROM Course
+WHERE course_No IN (
+	SELECT course_No
+	FROM (
+		SELECT c.course_No, COUNT(*) AS num
+		FROM Enrollment e
+		INNER JOIN Section s
+			ON e.section_Id = s.section_Id
+		INNER JOIN Course c
+			ON s.course_No = c.course_No
+		GROUP BY c.course_No
+		ORDER BY COUNT(*)
+	)
+	HAVING MIN(num) = 1
+	GROUP BY course_No
+)
+ORDER BY course_No;
+
+
+
+
+
+
+
+
