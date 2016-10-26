@@ -89,7 +89,106 @@ WHERE course_No IN (
 ORDER BY course_No;
 
 
+SELECT course_No, description
+FROM Course
+WHERE course_No IN (
+	SELECT course_No
+	FROM Section
+	WHERE TO_CHAR(start_Date_Time, 'HH:MI AM') = '10:30 AM'
+)
+ORDER BY course_No;
 
+
+SELECT g.student_Id, s.last_Name
+FROM Grade g
+INNER JOIN Enrollment e
+	ON  g.student_Id = e.student_Id
+	AND g.section_Id = e.section_Id
+INNER JOIN Student s
+	ON e.student_Id = s.student_Id
+WHERE g.numeric_Grade < (
+	SELECT AVG(numeric_Grade)
+	FROM Grade
+	WHERE grade_Code_Occurrence = 3
+	AND section_Id = 120
+	AND grade_Type_Code = 'QZ'
+)
+AND g.grade_Code_Occurrence = 3
+AND g.section_Id = 120
+AND grade_Type_Code = 'QZ';
+
+
+SELECT first_Name, last_Name, phone
+FROM Student 
+WHERE student_Id IN (
+	SELECT e.student_Id
+	FROM Enrollment e
+	INNER JOIN Section s
+		ON e.section_Id = s.section_Id
+	INNER JOIN Course c
+		ON s.course_No = c.course_No
+	WHERE c.description = 'Systems Analysis'
+)
+AND student_Id IN (
+	SELECT e.student_Id
+	FROM Enrollment e
+	INNER JOIN Section s
+		ON e.section_Id = s.section_Id
+	INNER JOIN Course c
+		ON s.course_No = c.course_No
+	WHERE c.description = 'Project Management'
+)
+ORDER BY last_Name;
+
+
+SELECT i.first_Name, i.last_Name, c.course_No, c.description
+FROM Instructor i
+INNER JOIN Section s
+	ON i.instructor_Id = s.instructor_Id
+INNER JOIN Course c
+	ON s.course_No = c.course_No
+INNER JOIN (
+	SELECT i.instructor_Id, COUNT(*) AS num
+	FROM Instructor i
+	INNER JOIN Section s
+		ON i.instructor_Id = s.instructor_Id
+	INNER JOIN Course c
+		ON s.course_No = c.course_No 
+	WHERE c.description LIKE '%Java%'
+	GROUP BY i.instructor_Id	
+) t 
+	ON i.instructor_Id = t.instructor_Id
+WHERE t.num = (
+	SELECT MAX(num) 
+	FROM (
+		SELECT i.instructor_Id, COUNT(*) AS num
+		FROM Instructor i
+		INNER JOIN Section s
+			ON i.instructor_Id = s.instructor_Id
+		INNER JOIN Course c
+			ON s.course_No = c.course_No 
+		WHERE c.description LIKE '%Java%'
+		GROUP BY i.instructor_Id
+	)
+) 
+AND c.description LIKE '%Java%'
+ORDER BY last_Name, first_Name, description;
+
+
+SELECT g.student_Id, s.last_Name
+FROM Grade g
+INNER JOIN Enrollment e
+	ON  g.student_Id = e.student_Id
+	AND g.section_Id = e.section_Id
+INNER JOIN Student s
+	ON e.student_Id = s.student_Id
+WHERE g.grade_Type_Code = 'FI'
+AND g.section_Id = 130
+AND numeric_grade > (
+	SELECT AVG(numeric_Grade)
+	FROM Grade
+)
+ORDER BY last_Name;
 
 
 
