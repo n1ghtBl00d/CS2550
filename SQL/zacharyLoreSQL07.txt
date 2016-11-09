@@ -1,0 +1,170 @@
+SELECT last_Name, first_Name
+FROM Instructor 
+WHERE instructor_Id NOT IN (
+	SELECT DISTINCT instructor_Id
+	FROM Grade g
+	JOIN Grade_Type_Weight gtw
+		ON g.grade_Type_Code = gtw.grade_Type_Code
+	JOIN Section s
+		ON gtw.section_Id = s.section_Id
+	WHERE g.grade_Type_Code = 'PJ'
+)
+ORDER BY last_Name;
+
+
+SELECT COUNT(*) AS below_Average
+FROM (
+	SELECT student_Id
+	FROM Grade 
+	WHERE grade_Type_Code = 'FI'
+	AND section_Id = 86
+	AND numeric_Grade < (
+		SELECT AVG(numeric_Grade) 
+		FROM Grade
+		WHERE grade_Type_Code = 'FI'
+		AND section_Id = 86
+	)
+);
+
+
+SELECT DISTINCT city, state AS st
+FROM Zipcode
+WHERE (city, state) = (
+	SELECT z.city, z.state
+	FROM Student s
+	JOIN Zipcode z
+		ON s.zip = z.zip
+	GROUP BY z.city, z.state
+	HAVING COUNT(*) = (
+		SELECT MAX(COUNT(*))
+		FROM Student s 
+		JOIN Zipcode z
+			ON s.zip = z.zip
+		GROUP BY z.city, z.state
+	)
+);
+
+
+SELECT g.student_Id, s.first_Name, s.last_Name, g.numeric_Grade
+FROM Grade g
+JOIN Enrollment e
+	ON  g.student_Id = e.student_Id
+	AND g.section_Id = e.section_Id
+JOIN Student s
+	ON e.student_Id = s.student_Id
+WHERE g.grade_Type_Code = 'FI'
+AND g.section_Id = 81
+AND numeric_Grade = (
+	SELECT MIN(numeric_Grade) 
+	FROM Grade
+	WHERE grade_Type_Code = 'FI'
+	AND section_Id = 81
+);
+
+
+SELECT student_Id, last_Name, first_Name
+FROM Student
+WHERE student_Id IN (
+	SELECT e.student_Id
+	FROM Enrollment e
+	JOIN Section s
+		ON e.section_Id = s.section_Id
+	JOIN Course c 
+		ON s.course_No = c.course_No
+	GROUP BY e.student_Id, c.course_No
+	HAVING COUNT(*) > 1
+)
+ORDER BY last_Name, first_Name;
+
+
+SELECT first_Name, last_Name
+FROM Student
+WHERE student_Id IN (
+	SELECT e.student_Id
+	FROM Enrollment e
+	JOIN Section s
+		ON e.section_Id = s.section_Id
+	JOIN Course c 
+		ON s.course_No = c.course_No
+	WHERE c.course_No > 199
+	AND c.course_No < 300
+	GROUP BY e.student_Id
+	HAVING COUNT(*) = (
+		SELECT MIN(COUNT(*))
+		FROM Enrollment e
+		JOIN Section s
+			ON e.section_Id = s.section_Id
+		JOIN Course c 
+			ON s.course_No = c.course_No
+		WHERE c.course_No > 199
+		AND c.course_No < 300
+		GROUP BY e.student_Id
+	)
+)
+ORDER BY last_Name;
+
+
+SELECT course_No, description
+FROM Course
+WHERE course_No = (
+	SELECT c.course_No
+	FROM Enrollment e
+	JOIN Section s
+		ON e.section_Id = s.section_Id
+	JOIN Course c
+		ON s.course_No = c.course_No
+	GROUP BY c.course_No
+	HAVING COUNT(*) = (
+		SELECT MAX(COUNT(*))
+		FROM Enrollment e
+		JOIN Section s
+			ON e.section_Id = s.section_Id
+		JOIN Course c
+			ON s.course_No = c.course_No
+		GROUP BY c.course_No
+	)
+);
+
+
+SELECT first_Name, last_Name
+FROM Student
+WHERE student_Id IN (
+	SELECT e.student_Id
+	FROM Section s
+	JOIN Enrollment e
+		ON e.section_Id = s.section_Id
+	WHERE TO_CHAR(s.start_Date_Time, 'HH:MI') = '10:30'
+)
+ORDER BY last_Name;
+
+SELECT first_Name, last_Name
+FROM Student
+WHERE student_Id IN (
+	SELECT student_Id
+	FROM Grade
+	WHERE section_Id = 87
+	AND grade_Type_Code = 'FI'
+	AND numeric_Grade < (
+		SELECT AVG(numeric_Grade) 
+		FROM Grade
+		WHERE section_Id = 87
+		AND grade_Type_Code = 'FI'
+	)
+)
+ORDER BY last_Name;
+
+
+SELECT first_Name, last_Name, phone
+FROM Student
+WHERE student_Id IN (
+	SELECT e.student_Id
+	FROM Enrollment e
+	JOIN Section s
+		ON e.section_Id = s.section_Id
+	JOIN Course c
+		on s.course_No = c.course_No
+	WHERE description IN ('Intro to SQL', 'Oracle Tools', 'PL/SQL Programming', 
+	'Database Design', 'Database System Principles', 'DB Programming with Java')
+)
+ORDER BY last_Name;
+
